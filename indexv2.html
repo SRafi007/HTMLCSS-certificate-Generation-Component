@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoBangla Professional Certificate Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gold-gradient: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-hard: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="%23ffffff" stop-opacity=".1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"><animate attributeName="cx" values="200;800;200" dur="20s" repeatCount="indefinite"/></circle><circle cx="800" cy="800" r="150" fill="url(%23a)"><animate attributeName="cy" values="800;200;800" dur="25s" repeatCount="indefinite"/></circle><circle cx="500" cy="500" r="75" fill="url(%23a)"><animate attributeName="r" values="75;150;75" dur="15s" repeatCount="indefinite"/></circle></svg>') center/cover;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; left: 20%; animation-delay: 5s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; left: 70%; animation-delay: 10s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; left: 80%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glassmorphism Header */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-logo i {
+            font-size: 2rem;
+            color: #ffd700;
+        }
+
+        /* Premium Certificate Type Cards */
+        .certificate-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .cert-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-hard);
+        }
+
+        .cert-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: var(--gold-gradient);
+            border-radius: 25px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: xor;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .cert-card:hover::before {
+            opacity: 1;
+        }
+
+        .cert-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .cert-card.active {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-color: #ffd700;
+            transform: translateY(-5px);
+        }
+
+        .cert-card.active::before {
+            opacity: 1;
+        }
+
+        .cert-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        .cert-card:hover .cert-icon {
+            transform: rotate(10deg) scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+        }
+
+        .cert-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .cert-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Premium Form Design */
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-hard);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gold-gradient);
+        }
+
+        .form-section.active {
+            display: block;
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gold-gradient);
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+        }
+
+        /* Premium Select Styling */
+        select.form-control {
+            cursor: pointer;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23a0aec0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            appearance: none;
+        }
+
+        /* Advanced Button Design */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096, #4a5568);
+            color: white;
+            box-shadow: 0 10px 30px rgba(74, 85, 104, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(74, 85, 104, 0.5);
+        }
+
+        /* Premium Certificate Design */
+        .certificate-preview {
+            display: none;
+            margin-top: 50px;
+        }
+
+        .certificate-preview.active {
+            display: block;
+            animation: zoomIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .certificate {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ffffff, #fafafa);
+            border: 15px solid transparent;
+            border-image: linear-gradient(45deg, #ffd700, #ffb347, #ffd700) 1;
+            border-radius: 30px;
+            padding: 60px 50px;
+            position: relative;
+            box-shadow: 
+                0 0 0 5px rgba(255, 215, 0, 0.2),
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            min-height: 700px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .certificate::before,
+        .certificate::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffd700, #ffb347);
+            border-radius: 50%;
+        }
+
+        .certificate::before {
+            top: -30px;
+            left: -30px;
+        }
+
+        .certificate::after {
+            bottom: -30px;
+            right: -30px;
+        }
+
+        .cert-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cert-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .cert-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .cert-body {
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cert-text {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .recipient-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 600;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .recipient-name::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: var(--gold-gradient);
+            border-radius: 2px;
+        }
+
+        .cert-details {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .signature-section {
+            text-align: center;
+            flex: 1;
+        }
+
+        .signature-line {
+            width: 180px;
+            height: 2px;
+            background: var(--gold-gradient);
+            margin: 0 auto 15px;
+            border-radius: 1px;
+        }
+
+        .signature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .cert-seal {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gold-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.2;
+            box-shadow: 
+                0 0 0 8px rgba(255, 215, 0, 0.2),
+                0 10px 30px rgba(255, 215, 0, 0.4);
+            position: relative;
+        }
+
+        .cert-seal::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ffd700, #ffb347, #ffd700);
+            animation: rotate 3s linear infinite;
+            z-index: -1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .certificate-types { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-section { padding: 30px 20px; }
+            .certificate { padding: 40px 25px; margin: 0 10px; }
+            .cert-title { font-size: 2.5rem; }
+            .recipient-name { font-size: 2rem; }
+            .cert-footer { flex-direction: column; gap: 30px; }
+            .btn-group { flex-direction: column; align-items: center; }
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .container > *:not(.certificate-preview) { display: none !important; }
+            .certificate-preview { display: block !important; margin: 0; }
+            .certificate { 
+                box-shadow: none; 
+                border: 15px solid #ffd700;
+                margin: 0;
+                max-width: none;
+                page-break-inside: avoid;
+            }
+            .btn-group { display: none !important; }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="brand-logo">
+                    <i class="fas fa-crown"></i>
+                    <span style="font-size: 1.5rem; font-weight: 600;">GoBangla.com.bd</span>
+                </div>
+                <h1>Professional Certificate Generator</h1>
+                <p>Create stunning, professional certificates with advanced design and premium quality</p>
+            </div>
+        </div>
+
+        <div class="certificate-types">
+            <div class="cert-card" data-type="participation">
+                <div class="cert-icon">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <h3>Participation Excellence</h3>
+                <p>Premium certificates for quiz participants with elegant design and professional finishing</p>
+            </div>
+
+            <div class="cert-card" data-type="winner">
+                <div class="cert-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Winner's Achievement</h3>
+                <p>Exclusive winner certificates with gold accents and prestigious recognition design</p>
+            </div>
+
+            <div class="cert-card" data-type="achievement">
+                <div class="cert-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Special Recognition</h3>
+                <p>Distinguished achievement certificates for outstanding performance and milestones</p>
+            </div>
+        </div>
+
+        <!-- Participation Form -->
+        <div class="form-section" id="participation-form">
+            <h2>Participation Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="p-name"><i class="fas fa-user"></i> Participant Name</label>
+                    <input type="text" id="p-name" class="form-control" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="p-quiz"><i class="fas fa-quiz"></i> Quiz Title</label>
+                    <input type="text" id="p-quiz" class="form-control" placeholder="Bangla Literature Quiz">
+                </div>
+                <div class="form-group">
+                    <label for="p-date"><i class="fas fa-calendar"></i> Event Date</label>
+                    <input type="date" id="p-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="p-category"><i class="fas fa-tag"></i> Category</label>
+                    <select id="p-category" class="form-control">
+                        <option value="General Knowledge">General Knowledge</option>
+                        <option value="Literature">Literature</option>
+                        <option value="History">History</option>
+                        <option value="Science">Science</option>
+                        <option value="Culture">Culture</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="p-description"><i class="fas fa-info-circle"></i> Event Description</label>
+                <textarea id="p-description" class="form-control" rows="3" placeholder="Brief description of the quiz event"></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generateCertificate('participation')">
+                    <i class="fas fa-magic"></i> Generate Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+            </div>
+        </div>
+
+        <!-- Winner Form -->
+        <div class="form-section" id="winner-form">
+            <h2>Winner Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="w-name"><i class="fas fa-crown"></i> Winner Name</label>
+                    <input type="text" id="w-name" class="form-control" placeholder="Enter winner's full name">
+                </div>
+                <div class="form-group">
+                    <label for="w-position"><i class="fas fa-trophy"></i> Achievement Position</label>
+                    <select id="w-position" class="form-control">
+                        <option value="First">🥇 First Place Champion</option>
+                        <option value="Second">🥈 Second Place Runner-up</option>
+                        <option value="Third">🥉 Third Place Winner</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="w-quiz"><i class="fas fa-quiz"></i> Competition Title</label>
+                    <input type="text" id="w-quiz" class="form-control" placeholder="National Bangla Quiz Championship">
+                </div>
+                <div class="form-group">
+                    <label for="w-date"><i class="fas fa-calendar"></i> Competition Date</label>
+                    <input type="date" id="w-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="w-score"><i class="fas fa-chart-line"></i> Final Score</label>
+                    <input type="text" id="w-score" class="form-control" placeholder="95/100 or 95%">
+                </div>
+                <div class="form-group">
+                    <label for="w-participants"><i class="fas fa-users"></i> Total Participants</label>
+                    <input type="number" id="w-participants" class="form-control" placeholder="500">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generateCertificate('winner')">
+                    <i class="fas fa-trophy"></i> Generate Winner Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+            </div>
+        </div>
+
+        <!-- Achievement Form -->
+        <div class="form-section" id="achievement-form">
+            <h2>Achievement Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="a-name"><i class="fas fa-user-graduate"></i> Recipient Name</label>
+                    <input type="text" id="a-name" class="form-control" placeholder="Enter recipient's full name">
+                </div>
+                <div class="form-group">
+                    <label for="a-achievement"><i class="fas fa-star"></i> Achievement Title</label>
+                    <input type="text" id="a-achievement" class="form-control" placeholder="Perfect Score Master">
+                </div>
+                <div class="form-group">
+                    <label for="a-date"><i class="fas fa-calendar"></i> Achievement Date</label>
+                    <input type="date" id="a-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="a-level"><i class="fas fa-level-up-alt"></i> Achievement Level</label>
+                    <select id="a-level" class="form-control">
+                        <option value="Bronze">Bronze Level</option>
+                        <option value="Silver">Silver Level</option>
+                        <option value="Gold">Gold Level</option>
+                        <option value="Platinum">Platinum Level</option>
+                        <option value="Diamond">Diamond Level</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="a-criteria"><i class="fas fa-clipboard-check"></i> Achievement Criteria</label>
+                    <input type="text" id="a-criteria" class="form-control" placeholder="100% Accuracy in Advanced Quiz">
+                </div>
+                <div class="form-group">
+                    <label for="a-organization"><i class="fas fa-building"></i> Issuing Organization</label>
+                    <input type="text" id="a-organization" class="form-control" placeholder="GoBangla Academy" value="GoBangla Academy">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="a-description"><i class="fas fa-info-circle"></i> Achievement Description</label>
+                <textarea id="a-description" class="form-control" rows="3" placeholder="Detailed description of the achievement"></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="generateCertificate('achievement')">
+                    <i class="fas fa-star"></i> Generate Achievement Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+            </div>
+        </div>
+
+        <!-- Certificate Preview Section -->
+        <div class="certificate-preview" id="certificate-preview">
+            <div class="certificate" id="certificate">
+                <!-- Certificate content will be generated here -->
+            </div>
+            <div class="btn-group" style="margin-top: 30px;">
+                <button class="btn btn-primary" onclick="downloadCertificate()">
+                    <i class="fas fa-download"></i> Download Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="printCertificate()">
+                    <i class="fas fa-print"></i> Print Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="shareCertificate()">
+                    <i class="fas fa-share"></i> Share Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="backToForm()">
+                    <i class="fas fa-arrow-left"></i> Back to Form
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentCertificateType = '';
+        let certificateData = {};
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.value = today;
+            });
+
+            // Add event listeners to certificate type cards
+            document.querySelectorAll('.cert-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    selectCertificateType(type);
+                });
+            });
+
+            // Add form validation
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.addEventListener('blur', validateField);
+                input.addEventListener('input', clearFieldError);
+            });
+        });
+
+        // Select certificate type
+        function selectCertificateType(type) {
+            currentCertificateType = type;
+            
+            // Remove active class from all cards
+            document.querySelectorAll('.cert-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to selected card
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            
+            // Hide all forms
+            document.querySelectorAll('.form-section').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Show selected form
+            document.getElementById(`${type}-form`).classList.add('active');
+            
+            // Scroll to form
+            document.getElementById(`${type}-form`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        // Field validation
+        function validateField(event) {
+            const field = event.target;
+            const value = field.value.trim();
+            
+            if (field.hasAttribute('required') && !value) {
+                showFieldError(field, 'This field is required');
+                return false;
+            }
+            
+            // Email validation
+            if (field.type === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showFieldError(field, 'Please enter a valid email address');
+                    return false;
+                }
+            }
+            
+            // Name validation
+            if (field.id.includes('name') && value) {
+                if (value.length < 2) {
+                    showFieldError(field, 'Name must be at least 2 characters long');
+                    return false;
+                }
+            }
+            
+            clearFieldError(field);
+            return true;
+        }
+
+        function showFieldError(field, message) {
+            clearFieldError(field);
+            field.style.borderColor = '#e53e3e';
+            field.style.boxShadow = '0 0 0 4px rgba(229, 62, 62, 0.1)';
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.style.color = '#e53e3e';
+            errorDiv.style.fontSize = '0.9rem';
+            errorDiv.style.marginTop = '5px';
+            errorDiv.textContent = message;
+            
+            field.parentNode.appendChild(errorDiv);
+        }
+
+        function clearFieldError(field) {
+            field.style.borderColor = '#e2e8f0';
+            field.style.boxShadow = '';
+            
+            const errorDiv = field.parentNode.querySelector('.field-error');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+
+        // Generate certificate
+        function generateCertificate(type) {
+            if (!validateForm(type)) {
+                return;
+            }
+            
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div class="loading"></div> Generating...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                certificateData = collectFormData(type);
+                renderCertificate(type, certificateData);
+                showCertificatePreview();
+                
+                // Reset button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // Validate form
+        function validateForm(type) {
+            const form = document.getElementById(`${type}-form`);
+            const requiredFields = form.querySelectorAll('.form-control[required], .form-control:not([type="date"]):not([type="number"])');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    showFieldError(field, 'This field is required');
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Collect form data
+        function collectFormData(type) {
+            const data = {};
+            const form = document.getElementById(`${type}-form`);
+            const inputs = form.querySelectorAll('.form-control');
+            
+            inputs.forEach(input => {
+                data[input.id] = input.value;
+            });
+            
+            return data;
+        }
+
+        // Render certificate
+        function renderCertificate(type, data) {
+            const certificate = document.getElementById('certificate');
+            let content = '';
+            
+            switch(type) {
+                case 'participation':
+                    content = generateParticipationCertificate(data);
+                    break;
+                case 'winner':
+                    content = generateWinnerCertificate(data);
+                    break;
+                case 'achievement':
+                    content = generateAchievementCertificate(data);
+                    break;
+            }
+            
+            certificate.innerHTML = content;
+        }
+
+        // Generate participation certificate
+        function generateParticipationCertificate(data) {
+            const formattedDate = formatDate(data['p-date']);
+            return `
+                <div class="cert-header">
+                    <div class="cert-title">Certificate of Participation</div>
+                    <div class="cert-subtitle">Excellence in Learning</div>
+                </div>
+                <div class="cert-body">
+                    <div class="cert-text">This is to certify that</div>
+                    <div class="recipient-name">${data['p-name'] || 'Participant Name'}</div>
+                    <div class="cert-text">has successfully participated in</div>
+                    <div class="cert-details">
+                        <strong>${data['p-quiz'] || 'Quiz Title'}</strong><br>
+                        Category: ${data['p-category'] || 'General'}<br>
+                        ${data['p-description'] ? data['p-description'] : 'Interactive quiz competition showcasing knowledge and dedication'}
+                    </div>
+                    <div class="cert-text">
+                        Completed on <strong>${formattedDate}</strong><br>
+                        Demonstrating commitment to continuous learning and excellence
+                    </div>
+                </div>
+                <div class="cert-footer">
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Event Coordinator</div>
+                    </div>
+                    <div class="cert-seal">
+                        <div>GOBANGLA<br>CERTIFIED</div>
+                    </div>
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Academic Director</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate winner certificate
+        function generateWinnerCertificate(data) {
+            const formattedDate = formatDate(data['w-date']);
+            const positionEmoji = data['w-position'] === 'First' ? '🥇' : data['w-position'] === 'Second' ? '🥈' : '🥉';
+            
+            return `
+                <div class="cert-header">
+                    <div class="cert-title">Certificate of Achievement</div>
+                    <div class="cert-subtitle">Winner Recognition</div>
+                </div>
+                <div class="cert-body">
+                    <div class="cert-text">This is to proudly certify that</div>
+                    <div class="recipient-name">${data['w-name'] || 'Winner Name'}</div>
+                    <div class="cert-text">has achieved</div>
+                    <div class="cert-details">
+                        <strong>${positionEmoji} ${data['w-position'] || 'First'} Place</strong><br>
+                        in <strong>${data['w-quiz'] || 'Quiz Competition'}</strong><br>
+                        ${data['w-score'] ? `Final Score: ${data['w-score']}` : ''}<br>
+                        ${data['w-participants'] ? `Among ${data['w-participants']} participants` : ''}
+                    </div>
+                    <div class="cert-text">
+                        Awarded on <strong>${formattedDate}</strong><br>
+                        In recognition of outstanding knowledge and exceptional performance
+                    </div>
+                </div>
+                <div class="cert-footer">
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Competition Judge</div>
+                    </div>
+                    <div class="cert-seal">
+                        <div>GOBANGLA<br>WINNER<br>${new Date().getFullYear()}</div>
+                    </div>
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Chief Executive</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate achievement certificate
+        function generateAchievementCertificate(data) {
+            const formattedDate = formatDate(data['a-date']);
+            
+            return `
+                <div class="cert-header">
+                    <div class="cert-title">Certificate of Achievement</div>
+                    <div class="cert-subtitle">Special Recognition</div>
+                </div>
+                <div class="cert-body">
+                    <div class="cert-text">This certificate is proudly presented to</div>
+                    <div class="recipient-name">${data['a-name'] || 'Recipient Name'}</div>
+                    <div class="cert-text">for achieving</div>
+                    <div class="cert-details">
+                        <strong>${data['a-achievement'] || 'Special Achievement'}</strong><br>
+                        Level: ${data['a-level'] || 'Gold'}<br>
+                        Criteria: ${data['a-criteria'] || 'Excellence in Performance'}<br>
+                        ${data['a-description'] ? data['a-description'] : 'Outstanding dedication and exceptional results in academic pursuit'}
+                    </div>
+                    <div class="cert-text">
+                        Issued by <strong>${data['a-organization'] || 'GoBangla Academy'}</strong><br>
+                        on <strong>${formattedDate}</strong>
+                    </div>
+                </div>
+                <div class="cert-footer">
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Program Director</div>
+                    </div>
+                    <div class="cert-seal">
+                        <div>GOBANGLA<br>ACHIEVEMENT<br>AWARD</div>
+                    </div>
+                    <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <div class="signature-title">Institution Head</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function showCertificatePreview() {
+            document.querySelectorAll('.form-section').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            document.getElementById('certificate-preview').classList.add('active');
+            document.getElementById('certificate-preview').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function backToForm() {
+            document.getElementById('certificate-preview').classList.remove('active');
+            document.getElementById(`${currentCertificateType}-form`).classList.add('active');
+            document.getElementById(`${currentCertificateType}-form`).scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function resetForm() {
+            if (currentCertificateType) {
+                const form = document.getElementById(`${currentCertificateType}-form`);
+                const inputs = form.querySelectorAll('.form-control');
+                inputs.forEach(input => {
+                    if (input.type === 'date') {
+                        input.value = new Date().toISOString().split('T')[0];
+                    } else {
+                        input.value = '';
+                    }
+                    clearFieldError(input);
+                });
+            }
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            const certificate = document.getElementById('certificate');
+            const certificateClone = certificate.cloneNode(true);
+            
+            // Create a temporary container for the certificate
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '0';
+            tempContainer.style.width = '900px';
+            tempContainer.style.backgroundColor = 'white';
+            tempContainer.appendChild(certificateClone);
+            document.body.appendChild(tempContainer);
+            
+            // Use html2canvas if available, otherwise use print
+            if (typeof html2canvas !== 'undefined') {
+                html2canvas(certificateClone, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `${certificateData[Object.keys(certificateData)[0]] || 'certificate'}_${currentCertificateType}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    document.body.removeChild(tempContainer);
+                });
+            } else {
+                // Fallback to print
+                printCertificate();
+                document.body.removeChild(tempContainer);
+            }
+        }
+
+        // Print certificate
+        function printCertificate() {
+            const certificate = document.getElementById('certificate');
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Certificate - ${certificateData[Object.keys(certificateData)[0]] || 'Certificate'}</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+                        
+                        body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
+                        .certificate {
+                            max-width: 900px;
+                            margin: 0 auto;
+                            background: linear-gradient(135deg, #ffffff, #fafafa);
+                            border: 15px solid #ffd700;
+                            border-radius: 30px;
+                            padding: 60px 50px;
+                            position: relative;
+                            min-height: 700px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                        }
+                        
+                        .cert-header { text-align: center; margin-bottom: 40px; }
+                        .cert-title {
+                            font-family: 'Playfair Display', serif;
+                            font-size: 3.5rem;
+                            font-weight: 700;
+                            color: #ffd700;
+                            margin-bottom: 15px;
+                        }
+                        .cert-subtitle {
+                            font-size: 1.5rem;
+                            color: #4a5568;
+                            font-weight: 300;
+                            letter-spacing: 2px;
+                        }
+                        .cert-body {
+                            text-align: center;
+                            flex-grow: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                        }
+                        .cert-text {
+                            font-size: 1.4rem;
+                            color: #2d3748;
+                            line-height: 1.8;
+                            margin: 15px 0;
+                        }
+                        .recipient-name {
+                            font-family: 'Playfair Display', serif;
+                            font-size: 3rem;
+                            font-weight: 600;
+                            color: #ffd700;
+                            margin: 30px 0;
+                            position: relative;
+                        }
+                        .cert-details {
+                            font-size: 1.5rem;
+                            font-weight: 600;
+                            color: #2d3748;
+                            margin: 25px 0;
+                            padding: 20px;
+                            background: rgba(255, 215, 0, 0.1);
+                            border-radius: 15px;
+                            border-left: 5px solid #ffd700;
+                        }
+                        .cert-footer {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-top: 50px;
+                            padding-top: 30px;
+                            border-top: 2px solid rgba(255, 215, 0, 0.3);
+                        }
+                        .signature-section { text-align: center; flex: 1; }
+                        .signature-line {
+                            width: 180px;
+                            height: 2px;
+                            background: #ffd700;
+                            margin: 0 auto 15px;
+                            border-radius: 1px;
+                        }
+                        .signature-title {
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            color: #4a5568;
+                            letter-spacing: 0.5px;
+                        }
+                        .cert-seal {
+                            width: 100px;
+                            height: 100px;
+                            border-radius: 50%;
+                            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-weight: 700;
+                            font-size: 0.9rem;
+                            text-align: center;
+                            line-height: 1.2;
+                            border: 8px solid rgba(255, 215, 0, 0.2);
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${certificate.outerHTML}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+
+        // Share certificate
+        function shareCertificate() {
+            const recipientName = certificateData[Object.keys(certificateData)[0]] || 'Certificate Recipient';
+            const text = `🎉 ${recipientName} has earned a certificate from GoBangla.com.bd! 🎉\n\nCertificate Type: ${currentCertificateType.charAt(0).toUpperCase() + currentCertificateType.slice(1)}\nIssued by: GoBangla Quiz Platform\n\nVisit https://gobangla.com.bd for more quizzes and certificates!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'GoBangla Certificate Achievement',
+                    text: text,
+                    url: 'https://gobangla.com.bd'
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('Certificate details copied to clipboard! You can now share it.');
+                    });
+                } else {
+                    // Final fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('Certificate details copied to clipboard! You can now share it.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
