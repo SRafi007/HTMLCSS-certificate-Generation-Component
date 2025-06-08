@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoBangla Certificate Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+
+        /* Certificate Type Selection */
+        .cert-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cert-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .cert-card.active {
+            border-color: #ffd700;
+            background: #fffbf0;
+        }
+
+        .cert-card i {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .cert-card h3 {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .cert-card p {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section h2 {
+            font-family: 'Playfair Display', serif;
+            color: #2d3748;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-group {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .btn-secondary {
+            background: #718096;
+            margin-left: 10px;
+        }
+
+        /* Certificate Preview */
+        .certificate-preview {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .certificate-preview.active {
+            display: block;
+        }
+
+        .certificate {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 8px solid #ffd700;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+        }
+
+        .certificate::before,
+        .certificate::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            border-radius: 50%;
+        }
+
+        .certificate::before {
+            top: -20px;
+            left: -20px;
+        }
+
+        .certificate::after {
+            bottom: -20px;
+            right: -20px;
+        }
+
+        .cert-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .cert-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .cert-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .cert-subtitle {
+            color: #4a5568;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cert-body {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cert-text {
+            font-size: 1.2rem;
+            color: #2d3748;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .recipient-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #ffd700;
+            font-weight: 600;
+            margin: 25px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .cert-details {
+            font-size: 1.3rem;
+            color: #2d3748;
+            font-weight: 500;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fffbf0;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #ffd700;
+        }
+
+        .signature {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 150px;
+            height: 2px;
+            background: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .signature-text {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .cert-date, .cert-id {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        /* Download buttons */
+        .download-section {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .cert-types { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .certificate { margin: 0 10px; padding: 25px; }
+            .cert-title { font-size: 2rem; }
+            .recipient-name { font-size: 2rem; }
+            .cert-footer { flex-direction: column; gap: 20px; text-align: center; }
+        }
+
+        @media print {
+            body { background: white; }
+            .container > *:not(.certificate-preview) { display: none !important; }
+            .certificate-preview { display: block !important; }
+            .download-section { display: none !important; }
+            .certificate { 
+                box-shadow: none;
+                margin: 0;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-certificate"></i> GoBangla Certificate Generator</h1>
+            <p>Create beautiful certificates for quiz participants and winners</p>
+        </div>
+
+        <!-- Certificate Type Selection -->
+        <div class="cert-types">
+            <div class="cert-card" data-type="participation">
+                <i class="fas fa-medal"></i>
+                <h3>Participation Certificate</h3>
+                <p>For quiz participants</p>
+            </div>
+            <div class="cert-card" data-type="winner">
+                <i class="fas fa-trophy"></i>
+                <h3>Winner Certificate</h3>
+                <p>For quiz winners</p>
+            </div>
+            <div class="cert-card" data-type="achievement">
+                <i class="fas fa-star"></i>
+                <h3>Achievement Certificate</h3>
+                <p>For special achievements</p>
+            </div>
+        </div>
+
+        <!-- Participation Form -->
+        <div class="form-section" id="participation-form">
+            <h2>Participation Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="p-name">Participant Name</label>
+                    <input type="text" id="p-name" class="form-control" placeholder="Enter participant's full name">
+                </div>
+                <div class="form-group">
+                    <label for="p-quiz">Quiz Title</label>
+                    <input type="text" id="p-quiz" class="form-control" placeholder="Bangla Literature Quiz" value="Bangla Literature Quiz">
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="p-date">Date</label>
+                    <input type="date" id="p-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="p-category">Category</label>
+                    <select id="p-category" class="form-control">
+                        <option value="General Knowledge">General Knowledge</option>
+                        <option value="Literature">Literature</option>
+                        <option value="History">History</option>
+                        <option value="Science">Science</option>
+                        <option value="Culture">Culture</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="generateCertificate('participation')">
+                    <i class="fas fa-magic"></i> Generate Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Winner Form -->
+        <div class="form-section" id="winner-form">
+            <h2>Winner Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="w-name">Winner Name</label>
+                    <input type="text" id="w-name" class="form-control" placeholder="Enter winner's full name">
+                </div>
+                <div class="form-group">
+                    <label for="w-position">Position</label>
+                    <select id="w-position" class="form-control">
+                        <option value="First">🥇 First Place</option>
+                        <option value="Second">🥈 Second Place</option>
+                        <option value="Third">🥉 Third Place</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="w-quiz">Quiz Title</label>
+                    <input type="text" id="w-quiz" class="form-control" placeholder="National Bangla Quiz" value="National Bangla Quiz">
+                </div>
+                <div class="form-group">
+                    <label for="w-date">Date</label>
+                    <input type="date" id="w-date" class="form-control">
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="w-score">Score (Optional)</label>
+                    <input type="text" id="w-score" class="form-control" placeholder="95/100">
+                </div>
+                <div class="form-group">
+                    <label for="w-participants">Total Participants (Optional)</label>
+                    <input type="number" id="w-participants" class="form-control" placeholder="150">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="generateCertificate('winner')">
+                    <i class="fas fa-trophy"></i> Generate Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Achievement Form -->
+        <div class="form-section" id="achievement-form">
+            <h2>Achievement Certificate</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="a-name">Recipient Name</label>
+                    <input type="text" id="a-name" class="form-control" placeholder="Enter recipient's full name">
+                </div>
+                <div class="form-group">
+                    <label for="a-achievement">Achievement</label>
+                    <input type="text" id="a-achievement" class="form-control" placeholder="Perfect Score Achievement">
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="a-date">Date</label>
+                    <input type="date" id="a-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="a-level">Level</label>
+                    <select id="a-level" class="form-control">
+                        <option value="Bronze">Bronze Level</option>
+                        <option value="Silver">Silver Level</option>
+                        <option value="Gold">Gold Level</option>
+                        <option value="Platinum">Platinum Level</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="generateCertificate('achievement')">
+                    <i class="fas fa-star"></i> Generate Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Certificate Preview -->
+        <div class="certificate-preview" id="certificate-preview">
+            <div class="certificate" id="certificate">
+                <!-- Certificate content will be generated here -->
+            </div>
+            <div class="download-section">
+                <button class="btn" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+                <button class="btn btn-secondary" onclick="printCertificate()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn btn-secondary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Create Another
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.value = today;
+            });
+        });
+
+        // Certificate type selection
+        document.querySelectorAll('.cert-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const type = this.dataset.type;
+                
+                // Remove active class from all cards
+                document.querySelectorAll('.cert-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Hide all forms
+                document.querySelectorAll('.form-section').forEach(form => {
+                    form.classList.remove('active');
+                });
+                
+                // Show selected form
+                document.getElementById(type + '-form').classList.add('active');
+                
+                // Hide certificate preview
+                document.getElementById('certificate-preview').classList.remove('active');
+            });
+        });
+
+        function generateCertificate(type) {
+            let certificateHTML = '';
+            
+            if (type === 'participation') {
+                const name = document.getElementById('p-name').value;
+                const quiz = document.getElementById('p-quiz').value;
+                const date = formatDate(document.getElementById('p-date').value);
+                const category = document.getElementById('p-category').value;
+                
+                if (!name) {
+                    alert('Please enter participant name');
+                    return;
+                }
+                
+                certificateHTML = `
+                    <div class="cert-header">
+                        <div class="cert-logo">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <div class="cert-title">Certificate of Participation</div>
+                        <div class="cert-subtitle">GoBangla.com.bd</div>
+                    </div>
+                    <div class="cert-body">
+                        <div class="cert-text">This is to certify that</div>
+                        <div class="recipient-name">${name}</div>
+                        <div class="cert-text">has successfully participated in</div>
+                        <div class="cert-details">${quiz}</div>
+                        <div class="cert-text">Category: ${category}</div>
+                        <div class="cert-text">We acknowledge their dedication and effort in enhancing Bengali language and culture knowledge.</div>
+                    </div>
+                    <div class="cert-footer">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">Organizer</div>
+                        </div>
+                        <div>
+                            <div class="cert-date">Date: ${date}</div>
+                            <div class="cert-id">ID: PART-${generateID()}</div>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">GoBangla.com.bd</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'winner') {
+                const name = document.getElementById('w-name').value;
+                const position = document.getElementById('w-position').value;
+                const quiz = document.getElementById('w-quiz').value;
+                const date = formatDate(document.getElementById('w-date').value);
+                const score = document.getElementById('w-score').value;
+                const participants = document.getElementById('w-participants').value;
+                
+                if (!name) {
+                    alert('Please enter winner name');
+                    return;
+                }
+                
+                const positionEmoji = position === 'First' ? '🥇' : position === 'Second' ? '🥈' : '🥉';
+                
+                certificateHTML = `
+                    <div class="cert-header">
+                        <div class="cert-logo">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="cert-title">Winner Certificate</div>
+                        <div class="cert-subtitle">GoBangla.com.bd</div>
+                    </div>
+                    <div class="cert-body">
+                        <div class="cert-text">Congratulations to</div>
+                        <div class="recipient-name">${name}</div>
+                        <div class="cert-text">for achieving</div>
+                        <div class="cert-details">${positionEmoji} ${position} Place</div>
+                        <div class="cert-text">in ${quiz}</div>
+                        ${score ? `<div class="cert-text">Score: ${score}</div>` : ''}
+                        ${participants ? `<div class="cert-text">Out of ${participants} participants</div>` : ''}
+                        <div class="cert-text">Excellent performance and dedication recognized!</div>
+                    </div>
+                    <div class="cert-footer">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">Organizer</div>
+                        </div>
+                        <div>
+                            <div class="cert-date">Date: ${date}</div>
+                            <div class="cert-id">ID: WIN-${generateID()}</div>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">GoBangla.com.bd</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'achievement') {
+                const name = document.getElementById('a-name').value;
+                const achievement = document.getElementById('a-achievement').value;
+                const date = formatDate(document.getElementById('a-date').value);
+                const level = document.getElementById('a-level').value;
+                
+                if (!name) {
+                    alert('Please enter recipient name');
+                    return;
+                }
+                
+                certificateHTML = `
+                    <div class="cert-header">
+                        <div class="cert-logo">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="cert-title">Achievement Certificate</div>
+                        <div class="cert-subtitle">GoBangla.com.bd</div>
+                    </div>
+                    <div class="cert-body">
+                        <div class="cert-text">This certificate is awarded to</div>
+                        <div class="recipient-name">${name}</div>
+                        <div class="cert-text">for outstanding achievement in</div>
+                        <div class="cert-details">${achievement}</div>
+                        <div class="cert-text">Level: ${level}</div>
+                        <div class="cert-text">Your dedication to Bengali language and culture learning is commendable!</div>
+                    </div>
+                    <div class="cert-footer">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">Organizer</div>
+                        </div>
+                        <div>
+                            <div class="cert-date">Date: ${date}</div>
+                            <div class="cert-id">ID: ACH-${generateID()}</div>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <div class="signature-text">GoBangla.com.bd</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('certificate').innerHTML = certificateHTML;
+            document.getElementById('certificate-preview').classList.add('active');
+            
+            // Scroll to certificate
+            document.getElementById('certificate-preview').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return new Date().toLocaleDateString();
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function generateID() {
+            return Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        function resetForm() {
+            // Reset all form inputs
+            document.querySelectorAll('.form-control').forEach(input => {
+                if (input.type === 'date') {
+                    input.value = new Date().toISOString().split('T')[0];
+                } else if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                } else {
+                    input.value = '';
+                }
+            });
+            
+            // Reset default values
+            document.getElementById('p-quiz').value = 'Bangla Literature Quiz';
+            document.getElementById('w-quiz').value = 'National Bangla Quiz';
+            
+            // Hide certificate preview
+            document.getElementById('certificate-preview').classList.remove('active');
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        function downloadPDF() {
+            // Simple download as HTML for now
+            // For production, you'd want to integrate with a PDF library like jsPDF or html2pdf
+            const certificateHTML = document.getElementById('certificate').innerHTML;
+            const fullHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Certificate</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .certificate { 
+                            border: 8px solid #ffd700; 
+                            padding: 40px; 
+                            text-align: center; 
+                            max-width: 800px; 
+                            margin: 0 auto;
+                        }
+                        .cert-title { font-size: 2.5rem; color: #2d3748; margin: 20px 0; }
+                        .recipient-name { font-size: 2.5rem; color: #ffd700; margin: 25px 0; }
+                        .cert-details { font-size: 1.3rem; color: #2d3748; margin: 20px 0; padding: 15px; background: #fffbf0; border-left: 4px solid #ffd700; }
+                        .cert-footer { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 20px; border-top: 2px solid #ffd700; }
+                        .signature-line { width: 150px; height: 2px; background: #2d3748; margin-bottom: 8px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="certificate">${certificateHTML}</div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'certificate.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function goBack() {
+            document.getElementById('certificate-preview').classList.remove('active');
+            document.querySelectorAll('.cert-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(form => {
+                form.classList.remove('active');
+            });
+        }
+    </script>
+</body>
+</html>
+</html>
